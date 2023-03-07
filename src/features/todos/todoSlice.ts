@@ -45,6 +45,11 @@ const todo = createSlice({
                 todo.push(action.payload);
                 state.todoList = todo;
             })
+            .addCase(deleteTodo.fulfilled, (state, action) => {
+                const { id } = action.payload;
+                const todo = state.todoList.filter((item) => item.id !== id);
+                state.todoList = todo;
+            })
     }
 })
 
@@ -74,6 +79,19 @@ export const udpateTodo = createAsyncThunk('todos/udpateTodo', async (todo: Todo
             todo
         );
         return result.data;
+    } catch (e: any) {
+        return e.message;
+    }
+})
+
+export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (todo: Todo) => {
+    try {
+        const { id } = todo;
+        let result = await axios.delete(
+            `http://localhost:3500/todos/${id}`
+        );
+        if (result?.status === 200) return todo;
+        return `${result?.status}: ${result?.statusText}`;
     } catch (e: any) {
         return e.message;
     }

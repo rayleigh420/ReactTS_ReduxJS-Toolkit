@@ -5,7 +5,7 @@ import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
 import { Todo } from "../../types/todoTypes"
 import AddTodoForm from "./AddTodoForm"
-import { fetchData, getTodo, getTodoError, getTodoStatus, udpateTodo } from "./todoSlice"
+import { deleteTodo, fetchData, getTodo, getTodoError, getTodoStatus, udpateTodo } from "./todoSlice"
 
 const TodoList = () => {
 
@@ -33,6 +33,10 @@ const TodoList = () => {
         dispatch(udpateTodo(todo))
     }
 
+    const deleteTodos = (todo: Todo) => {
+        dispatch(deleteTodo(todo))
+    }
+
     let content;
     if (status == 'loading') {
         content = <p>Loading</p>
@@ -52,7 +56,7 @@ const TodoList = () => {
                         <label htmlFor={String(todo.id)}>{todo.title}</label>
                     </div>
                     <button className="trash">
-                        <FontAwesomeIcon icon={faTrash} />
+                        <FontAwesomeIcon icon={faTrash} onClick={() => deleteTodos(todo)} />
                     </button>
                 </article>
             );

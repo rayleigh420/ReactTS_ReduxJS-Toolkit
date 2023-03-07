@@ -1166,75 +1166,9 @@
     },
     {
       "userId": 1,
-      "title": "Another new todo!",
-      "completed": false,
-      "id": 201
-    },
-    {
-      "userId": 1,
-      "id": 1000,
-      "title": "newTodo",
-      "completed": false
-    },
-    {
-      "userId": 1,
-      "title": "le nhat duy",
-      "completed": false,
-      "id": 1001
-    },
-    {
-      "userId": 1,
-      "title": "le nhat duy",
-      "completed": false,
-      "id": 1002
-    },
-    {
-      "userId": 1,
       "title": "le nhat duy ádasd",
-      "completed": false,
+      "completed": true,
       "id": 1003
-    },
-    {
-      "userId": 1,
-      "title": "test new todo",
-      "completed": false,
-      "id": 1004
-    },
-    {
-      "userId": 1,
-      "title": "test second time",
-      "completed": false,
-      "id": 1005
-    },
-    {
-      "userId": 1,
-      "title": "test second time",
-      "completed": false,
-      "id": 1006
-    },
-    {
-      "userId": 1,
-      "title": "test third time",
-      "completed": false,
-      "id": 1007
-    },
-    {
-      "userID": 1,
-      "title": "test in react ts",
-      "completed": false,
-      "id": 1008
-    },
-    {
-      "userID": 1,
-      "title": "test in react ts",
-      "completed": false,
-      "id": 1009
-    },
-    {
-      "userID": 1,
-      "title": "test in react ts ver2",
-      "completed": false,
-      "id": 1010
     }
   ]
 }
