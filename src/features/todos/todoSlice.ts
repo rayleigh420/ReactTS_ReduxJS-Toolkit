@@ -39,6 +39,12 @@ const todo = createSlice({
             .addCase(addTodo.fulfilled, (state, action) => {
                 state.todoList.push(action.payload)
             })
+            .addCase(udpateTodo.fulfilled, (state, action) => {
+                const { id } = action.payload;
+                let todo = state.todoList.filter((item) => item.id !== id);
+                todo.push(action.payload);
+                state.todoList = todo;
+            })
     }
 })
 
@@ -57,6 +63,19 @@ export const addTodo = createAsyncThunk('todos/addTodo', async (todo: Todo, thun
         return result.data
     } catch (e: any) {
         return e.message
+    }
+})
+
+export const udpateTodo = createAsyncThunk('todos/udpateTodo', async (todo: Todo) => {
+    try {
+        const { id } = todo;
+        let result = await axios.put(
+            `http://localhost:3500/todos/${id}`,
+            todo
+        );
+        return result.data;
+    } catch (e: any) {
+        return e.message;
     }
 })
 

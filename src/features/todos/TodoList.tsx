@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from "axios"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { Todo } from "../../types/todoTypes"
 import AddTodoForm from "./AddTodoForm"
-import { fetchData, getTodo, getTodoError, getTodoStatus } from "./todoSlice"
+import { fetchData, getTodo, getTodoError, getTodoStatus, udpateTodo } from "./todoSlice"
 
 const TodoList = () => {
 
@@ -28,6 +29,10 @@ const TodoList = () => {
         }
     }, [status, dispatch])
 
+    const changeComplete = (todo: Todo) => {
+        dispatch(udpateTodo(todo))
+    }
+
     let content;
     if (status == 'loading') {
         content = <p>Loading</p>
@@ -40,9 +45,9 @@ const TodoList = () => {
                             type="checkbox"
                             checked={todo.completed}
                             id={String(todo.id)}
-                        //   onChange={() =>
-                        //     changeComplete({ ...todo, completed: !todo.completed })
-                        //   }
+                            onChange={() =>
+                                changeComplete({ ...todo, completed: !todo.completed })
+                            }
                         />
                         <label htmlFor={String(todo.id)}>{todo.title}</label>
                     </div>
