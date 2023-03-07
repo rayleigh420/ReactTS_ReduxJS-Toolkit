@@ -1,8 +1,25 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { AnyAction, AsyncThunk, createAsyncThunk, createSlice, isFulfilled, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../app/store";
 import { Todo } from "../../types/todoTypes";
 
+type GenericAsyncThunk = AsyncThunk<unknown, unknown, any>
+
+type PendingAction = ReturnType<GenericAsyncThunk['pending']>
+type RejectedAction = ReturnType<GenericAsyncThunk['rejected']>
+type FulfilledAction = ReturnType<GenericAsyncThunk['fulfilled']>
+
+function isPendingAction(action: AnyAction): action is PendingAction {
+    return action.type.endsWith('/pending')
+}
+
+function idFulfilledAction(action: AnyAction): action is FulfilledAction {
+    return action.type.endsWith('/fulfilled')
+}
+
+function isRejectedAction(action: AnyAction): action is RejectedAction {
+    return action.type.endsWith('/rejected')
+}
 interface TodoState {
     todoList: Todo[]
     status: 'idle' | 'loading' | 'successed' | 'failed',
@@ -25,17 +42,17 @@ const todo = createSlice({
     },
     extraReducers: (bulder) => {
         bulder
-            .addCase(getTodo.pending, (state) => {
-                state.status = 'loading'
-            })
+            // .addCase(getTodo.pending, (state) => {
+            //     state.status = 'loading'
+            // })
             .addCase(getTodo.fulfilled, (state, action) => {
-                state.status = 'successed'
+                // state.status = 'successed'
                 state.todoList = action.payload
             })
-            .addCase(getTodo.rejected, (state, action) => {
-                state.status = 'failed'
-                state.error = action.payload as string
-            })
+            // .addCase(getTodo.rejected, (state, action) => {
+            //     state.status = 'failed'
+            //     state.error = action.payload as string
+            // })
             .addCase(addTodo.fulfilled, (state, action) => {
                 state.todoList.push(action.payload)
             })
@@ -49,6 +66,16 @@ const todo = createSlice({
                 const { id } = action.payload;
                 const todo = state.todoList.filter((item) => item.id !== id);
                 state.todoList = todo;
+            })
+            .addMatcher(isPendingAction, (state) => {
+                state.status = 'loading'
+            })
+            .addMatcher(isFulfilled, (state) => {
+                state.status = 'successed'
+            })
+            .addMatcher(isRejectedAction, (state, action) => {
+                state.status = 'failed'
+                state.error = action.payload as string
             })
     }
 })
