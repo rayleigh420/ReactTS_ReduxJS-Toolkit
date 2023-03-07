@@ -67,13 +67,13 @@ const todo = createSlice({
                 const todo = state.todoList.filter((item) => item.id !== id);
                 state.todoList = todo;
             })
-            .addMatcher(isPendingAction, (state) => {
+            .addMatcher<PendingAction>(isPendingAction, (state) => {
                 state.status = 'loading'
             })
-            .addMatcher(isFulfilled, (state) => {
+            .addMatcher<FulfilledAction>(isFulfilled, (state) => {
                 state.status = 'successed'
             })
-            .addMatcher(isRejectedAction, (state, action) => {
+            .addMatcher<RejectedAction>(isRejectedAction, (state, action) => {
                 state.status = 'failed'
                 state.error = action.payload as string
             })
