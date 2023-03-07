@@ -24,12 +24,9 @@ const TodoList = () => {
         // getData()
 
         if (status == 'idle') {
-            console.log("Call")
             dispatch(getTodo())
         }
     }, [status, dispatch])
-
-    console.log(todos)
 
     let content;
     if (status == 'loading') {

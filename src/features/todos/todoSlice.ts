@@ -36,14 +36,24 @@ const todo = createSlice({
                 state.status = 'failed'
                 state.error = action.payload as string
             })
+            .addCase(addTodo.fulfilled, (state, action) => {
+                state.todoList.push(action.payload)
+            })
     }
 })
 
 export const getTodo = createAsyncThunk('todos/getTodo', async () => {
     try {
-        console.log("redux")
         let result = await axios.get('http://localhost:3500/todos');
-        console.log("Redux: ", result.data)
+        return result.data
+    } catch (e: any) {
+        return e.message
+    }
+})
+
+export const addTodo = createAsyncThunk('todos/addTodo', async (todo: Todo, thunkAPI) => {
+    try {
+        let result = await axios.post('http://localhost:3500/todos', todo);
         return result.data
     } catch (e: any) {
         return e.message
