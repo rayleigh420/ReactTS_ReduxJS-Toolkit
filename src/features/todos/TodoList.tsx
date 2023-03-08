@@ -17,14 +17,6 @@ const TodoList = () => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        // const getData = async () => {
-        //     let result = await axios.get('http://localhost:3500/todos')
-        //     console.log(result.data)
-        //     dispatch(fetchData(result.data))
-        // }
-
-        // getData()
-
         if (status == 'idle') {
             dispatch(getTodo())
         }
