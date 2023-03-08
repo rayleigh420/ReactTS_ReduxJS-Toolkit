@@ -1,4 +1,4 @@
-import { AnyAction, AsyncThunk, createAsyncThunk, createSlice, isFulfilled, PayloadAction } from "@reduxjs/toolkit";
+import { AnyAction, AsyncThunk, createAsyncThunk, createEntityAdapter, createSlice, EntityState, isFulfilled, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
 import { RootState } from "../../app/store";
 import { Todo } from "../../types/todoTypes";
@@ -13,64 +13,53 @@ function isPendingAction(action: AnyAction): action is PendingAction {
     return action.type.endsWith('/pending')
 }
 
-function idFulfilledAction(action: AnyAction): action is FulfilledAction {
+function isFulfilledAction(action: AnyAction): action is FulfilledAction {
     return action.type.endsWith('/fulfilled')
 }
 
 function isRejectedAction(action: AnyAction): action is RejectedAction {
     return action.type.endsWith('/rejected')
 }
-interface TodoState {
-    todoList: Todo[]
+
+const todosAdapter = createEntityAdapter<Required<Todo>>({
+    sortComparer: (a, b) => b.id - a.id,
+})
+interface TodoState extends EntityState<Required<Todo>> {
     status: 'idle' | 'loading' | 'successed' | 'failed',
     error: null | string
 }
 
-const initialState: TodoState = {
-    todoList: [],
+const initialState: TodoState = todosAdapter.getInitialState({
     status: 'idle',
     error: null
-}
+})
 
 const todo = createSlice({
     name: 'todos',
     initialState,
-    reducers: {
-        fetchData: (state, action: PayloadAction<Todo[]>) => {
-            state.todoList = action.payload
-        }
-    },
+    reducers: {},
     extraReducers: (bulder) => {
         bulder
-            // .addCase(getTodo.pending, (state) => {
-            //     state.status = 'loading'
-            // })
             .addCase(getTodo.fulfilled, (state, action) => {
-                // state.status = 'successed'
-                state.todoList = action.payload
+                const todo = action.payload;
+                todosAdapter.upsertMany(state, todo)
             })
-            // .addCase(getTodo.rejected, (state, action) => {
-            //     state.status = 'failed'
-            //     state.error = action.payload as string
-            // })
             .addCase(addTodo.fulfilled, (state, action) => {
-                state.todoList.push(action.payload)
+                const todo = action.payload;
+                todosAdapter.addOne(state, todo)
             })
             .addCase(udpateTodo.fulfilled, (state, action) => {
-                const { id } = action.payload;
-                let todo = state.todoList.filter((item) => item.id !== id);
-                todo.push(action.payload);
-                state.todoList = todo;
+                const todo = action.payload;
+                todosAdapter.upsertOne(state, todo)
             })
             .addCase(deleteTodo.fulfilled, (state, action) => {
                 const { id } = action.payload;
-                const todo = state.todoList.filter((item) => item.id !== id);
-                state.todoList = todo;
+                todosAdapter.removeOne(state, id)
             })
             .addMatcher<PendingAction>(isPendingAction, (state) => {
                 state.status = 'loading'
             })
-            .addMatcher<FulfilledAction>(isFulfilled, (state) => {
+            .addMatcher<FulfilledAction>(isFulfilledAction, (state) => {
                 state.status = 'successed'
             })
             .addMatcher<RejectedAction>(isRejectedAction, (state, action) => {
@@ -124,10 +113,14 @@ export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (todo: Todo
     }
 })
 
+export const { selectAll: selectAllTodo } = todosAdapter.getSelectors(
+    (state: RootState) => state.todo
+)
+
 export const getTodoStatus = (state: RootState) => state.todo.status
 export const getTodoError = (state: RootState) => state.todo.error
 
-export const { fetchData } = todo.actions
+// export const { fetchData } = todo.actions
 
 export default todo.reducer
 

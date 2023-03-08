@@ -3,13 +3,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import axios from "axios"
 import { useEffect } from "react"
 import { useAppDispatch, useAppSelector } from "../../app/hooks"
+import { RootState } from "../../app/store"
 import { Todo } from "../../types/todoTypes"
 import AddTodoForm from "./AddTodoForm"
-import { deleteTodo, fetchData, getTodo, getTodoError, getTodoStatus, udpateTodo } from "./todoSlice"
+import { deleteTodo, getTodo, getTodoError, getTodoStatus, selectAllTodo, udpateTodo } from "./todoSlice"
 
 const TodoList = () => {
 
-    const todos = useAppSelector(state => state.todo.todoList)
+    const todos = useAppSelector((state: RootState) => selectAllTodo(state))
     const status = useAppSelector(getTodoStatus)
     const error = useAppSelector(getTodoError)
 
@@ -64,7 +65,6 @@ const TodoList = () => {
     } else if (status == 'failed') {
         content = <p>{error}</p>
     }
-
 
     return (
         <main>
