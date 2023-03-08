@@ -82,7 +82,7 @@ const todo = createSlice({
 
 export const getTodo = createAsyncThunk('todos/getTodo', async () => {
     try {
-        let result = await axios.get('http://localhost:3500/todos');
+        let result = await axios.get<Todo[]>('http://localhost:3500/todos');
         return result.data
     } catch (e: any) {
         return e.message
@@ -91,7 +91,7 @@ export const getTodo = createAsyncThunk('todos/getTodo', async () => {
 
 export const addTodo = createAsyncThunk('todos/addTodo', async (todo: Todo, thunkAPI) => {
     try {
-        let result = await axios.post('http://localhost:3500/todos', todo);
+        let result = await axios.post<Todo>('http://localhost:3500/todos', todo);
         return result.data
     } catch (e: any) {
         return e.message
@@ -101,7 +101,7 @@ export const addTodo = createAsyncThunk('todos/addTodo', async (todo: Todo, thun
 export const udpateTodo = createAsyncThunk('todos/udpateTodo', async (todo: Todo) => {
     try {
         const { id } = todo;
-        let result = await axios.put(
+        let result = await axios.put<Todo>(
             `http://localhost:3500/todos/${id}`,
             todo
         );
@@ -114,7 +114,7 @@ export const udpateTodo = createAsyncThunk('todos/udpateTodo', async (todo: Todo
 export const deleteTodo = createAsyncThunk('todos/deleteTodo', async (todo: Todo) => {
     try {
         const { id } = todo;
-        let result = await axios.delete(
+        let result = await axios.delete<Todo>(
             `http://localhost:3500/todos/${id}`
         );
         if (result?.status === 200) return todo;
